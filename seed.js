@@ -8,7 +8,7 @@ const Project = require('./models/project');
 const User = require('./models/user');
 const Task = require('./models/task');
 
-const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/EduSync';
+const dbUrl = process.env.ATLAS_DB_URL || process.env.DB_URL;
 mongoose.connect(dbUrl)
     .then(() => console.log('MongoDB Connected for Seeding!'))
     .catch(err => console.error('MongoDB Connection Error:', err));
@@ -53,14 +53,14 @@ const seedDB = async () => {
 
     // Create demo projects
     const project1 = new Project({
-        title: 'EduSync Platform',
+        title: 'EduVerse Platform',
         description: 'A web-based platform for student project collaboration and management.',
         tags: ['Web Dev', 'Fullstack', 'Node.js', 'MongoDB', 'EJS'],
         owner: registeredUser1._id,
         members: [registeredUser1._id, registeredUser2._id],
         status: 'In Progress',
         images: [
-            { url: 'https://res.cloudinary.com/your_cloud_name/image/upload/v1678880000/EduSync/edusync-banner_x1y2z3.png', filename: 'EduSync/edusync-banner_x1y2z3.png' }
+            { url: 'https://res.cloudinary.com/dksas2kn7/image/upload/v1772306649/susan-q-yin-2JIvboGLeho-unsplash_ohgnri.jpg', filename: 'EduSync/edusync-banner_x1y2z3.png' }
         ]
     });
     await project1.save();
@@ -77,7 +77,7 @@ const seedDB = async () => {
         members: [registeredUser2._id, registeredUser3._id],
         status: 'Open',
         images: [
-            { url: 'https://res.cloudinary.com/your_cloud_name/image/upload/v1678880001/EduSync/chatbot-concept_a4b5c6.png', filename: 'EduSync/chatbot-concept_a4b5c6.png' }
+            { url: 'https://res.cloudinary.com/dksas2kn7/image/upload/v1772306762/julien-tromeur-6UDansS-rPI-unsplash_l2ionb.jpg', filename: 'EduSync/chatbot-concept_a4b5c6.png' }
         ]
     });
     await project2.save();

@@ -2,6 +2,7 @@ const Project = require('../models/project');
 const User = require('../models/user');
 const Task = require('../models/task');
 const { cloudinary } = require('../cloudConfig');
+const mongoose = require("mongoose");
 
 module.exports.index = async (req, res) => {
     const projects = await Project.find({}).populate('owner');
@@ -34,8 +35,15 @@ module.exports.createProject = async (req, res) => {
     res.redirect(`/projects/${project._id}`);
 };
 
+
 module.exports.showProject = async (req, res) => {
-    const project = await Project.findById(req.params.projectId)
+    const { projectId } = req.params;
+    if (!mongoose.isValidObjectId(projectId)) {
+        req.flash("error", "Invalid project id!");
+        return res.redirect("/projects");
+    }
+
+    const project = await Project.findById(projectId)
         .populate('owner')
         .populate({
             path: 'members',
@@ -48,6 +56,8 @@ module.exports.showProject = async (req, res) => {
                 select: 'username profileImage' // Populate assignee's username
             }
         });
+
+
     if (!project) {
         req.flash('error', 'Cannot find that project!');
         return res.redirect('/projects');

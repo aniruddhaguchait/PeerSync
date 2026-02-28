@@ -15,7 +15,7 @@ module.exports.register = async (req, res, next) => {
         const registeredUser = await User.register(user, password);
         req.login(registeredUser, err => { // Auto-login after registration
             if (err) return next(err);
-            req.flash('success', 'Welcome to EduSync!');
+            req.flash('success', 'Welcome to PeerSync!');
             res.redirect('/projects');
         });
     } catch (e) {
@@ -96,27 +96,45 @@ module.exports.updateUserProfile = async (req, res) => {
 
 // TODO: Implement collaborator suggestion logic here
 module.exports.getSuggestedCollaborators = async (req, res) => {
-    const currentUser = req.user;
-    if (!currentUser) {
-        return res.status(401).json({ message: 'Authentication required.' });
+    if (!req.user) {
+        req.flash("error", "Please login first.");
+        return res.redirect("/users/login");
     }
 
-    // Basic suggestion: Find users with similar skills/interests but not current user
+    const currentUser = await User.findById(req.user._id);
+
     const currentSkills = currentUser.skills || [];
     const currentInterests = currentUser.interests || [];
     const currentDomainTags = currentUser.domainTags || [];
 
-    const suggestedUsers = await User.find({
-        _id: { $ne: currentUser._id }, // Not the current user
-        $or: [
-            { skills: { $in: currentSkills } },
-            { interests: { $in: currentInterests } },
-            { domainTags: { $in: currentDomainTags } }
-        ]
-    }).limit(5); // Limit suggestions
+  // ✅ if user has nothing filled, show some random users (or latest users)
+    let suggestedUsers = [];
+    if (
+        currentSkills.length === 0 &&
+        currentInterests.length === 0 &&
+        currentDomainTags.length === 0
+    ) {
+        suggestedUsers = await User.find({ _id: { $ne: currentUser._id } })
+        .sort({ _id: -1 })
+        .limit(12);
+        return res.render("users/findCollaborators", {
+        suggestedUsers,
+        infoMsg: "Add skills/interests in your profile to get better suggestions.",
+        });
+    }
 
-    res.render('users/findCollaborators', { suggestedUsers });
-    // Or for an API endpoint: res.json(suggestedUsers);
+  // ✅ build query only with non-empty arrays
+    const orConditions = [];
+    if (currentSkills.length) orConditions.push({ skills: { $in: currentSkills } });
+    if (currentInterests.length) orConditions.push({ interests: { $in: currentInterests } });
+    if (currentDomainTags.length) orConditions.push({ domainTags: { $in: currentDomainTags } });
+
+    suggestedUsers = await User.find({
+        _id: { $ne: currentUser._id },
+        $or: orConditions,
+    }).limit(12);
+
+    res.render("users/findCollaborators", { suggestedUsers, infoMsg: null });
 };
 
 // TODO: Basic Peer Review Logic (more complex in real app)

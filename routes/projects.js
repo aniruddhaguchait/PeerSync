@@ -9,6 +9,9 @@ const multer = require('multer');
 const { storage } = require('../cloudConfig');
 const upload = multer({ storage });
 
+// Analytics Dashboard (if you want it as a route)
+router.get('/analytics/dashboard', isLoggedIn, catchAsync(projects.getAnalytics));
+
 router.route('/')
     .get(catchAsync(projects.index))
     .post(isLoggedIn, upload.array('project[images]'), validateProject, catchAsync(projects.createProject)); // Allow multiple images
@@ -25,9 +28,6 @@ router.get('/:projectId/edit', isLoggedIn, isProjectOwner, catchAsync(projects.r
 // Project Member Management
 router.post('/:projectId/members/add', isLoggedIn, isProjectOwner, catchAsync(projects.addMember));
 router.delete('/:projectId/members/:memberId', isLoggedIn, isProjectOwner, catchAsync(projects.removeMember));
-
-// Analytics Dashboard (if you want it as a route)
-router.get('/analytics/dashboard', isLoggedIn, catchAsync(projects.getAnalytics));
 
 // Allow any logged-in user to join a project
 router.post('/:projectId/join', isLoggedIn, catchAsync(projects.joinProject));
