@@ -1,0 +1,60 @@
+<% layout('layouts/boilerplate')%>
+<div class="row my-4">
+    <div class="col-lg-10 offset-lg-1">
+        <h1 class="mb-4 text-center">Find Collaborators</h1>
+        <p class="lead text-center mb-5">Discover potential team members based on their skills and interests.</p>
+
+        <% if (suggestedUsers && suggestedUsers.length) { %>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <% suggestedUsers.forEach(user => { %>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <% if (user.profileImage && user.profileImage.url) { %>
+                                    <img src="<%= user.profileImage.url %>" alt="<%= user.username %>'s profile image" class="profile-img-thumbnail img-fluid mb-3" style="width: 80px; height: 80px;">
+                                <% } else { %>
+                                    <img src="https://res.cloudinary.com/dqj3i5lqf/image/upload/v1678880000/default/avatar.png" alt="Default Avatar" class="profile-img-thumbnail img-fluid mb-3" style="width: 80px; height: 80px;">
+                                <% } %>
+                                <h5 class="card-title"><%= user.username %></h5>
+                                <p class="card-text text-muted"><%= user.email %></p>
+                                <hr>
+                                <div class="mb-2">
+                                    <strong>Skills:</strong>
+                                    <% if (user.skills && user.skills.length) { %>
+                                        <% user.skills.slice(0, 3).forEach(skill => { %>
+                                            <span class="badge bg-info text-dark me-1"><%= skill %></span>
+                                        <% }); %>
+                                        <% if (user.skills.length > 3) { %>
+                                            <span class="badge bg-light text-muted">...</span>
+                                        <% } %>
+                                    <% } else { %>
+                                        <em>N/A</em>
+                                    <% } %>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Interests:</strong>
+                                    <% if (user.interests && user.interests.length) { %>
+                                        <% user.interests.slice(0, 3).forEach(interest => { %>
+                                            <span class="badge bg-secondary me-1"><%= interest %></span>
+                                        <% }); %>
+                                        <% if (user.interests.length > 3) { %>
+                                            <span class="badge bg-light text-muted">...</span>
+                                        <% } %>
+                                    <% } else { %>
+                                        <em>N/A</em>
+                                    <% } %>
+                                </div>
+                                <a href="/users/<%= user._id %>" class="btn btn-sm btn-primary">View Profile</a>
+                                <!-- TODO: Add a "Send Invite" button -->
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <div class="alert alert-info text-center" role="alert">
+                No collaborators found. Try updating your profile with more skills and interests!
+            </div>
+        <% } %>
+    </div>
+</div>

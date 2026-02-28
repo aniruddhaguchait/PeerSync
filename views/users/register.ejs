@@ -1,0 +1,68 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="auth-container">
+  <div class="auth-card register-card shadow-lg border-0">
+    <img
+      src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=1470&q=80"
+      alt="Register Banner"
+      class="auth-img"
+    />
+
+    <div class="card-body p-4">
+      <h4 class="text-center mb-4 fw-semibold text-primary">Create an Account</h4>
+
+      <form action="/users/register" method="POST" enctype="multipart/form-data" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            placeholder="Choose a username"
+            required
+            autofocus
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Create a strong password"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="profileImage" class="form-label">Profile Image (Optional)</label>
+          <input type="file" class="form-control" id="profileImage" name="user[profileImage]" />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
+      </form>
+    </div>
+
+    <div class="card-footer text-center text-muted">
+      Already have an account?
+      <a href="/users/login" class="text-primary text-decoration-none fw-medium">
+        Login here
+      </a>
+    </div>
+  </div>
+</div>

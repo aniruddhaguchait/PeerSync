@@ -1,0 +1,45 @@
+<% layout('layouts/boilerplate')%>
+<div class="container text-center py-5">
+    <h1 class="display-4 fw-bold mb-4">Welcome to PeerSync!</h1>
+    <p class="lead mb-4">Your unified digital space for student project collaboration, innovation, and long-term partnerships.</p>
+    <div class="d-grid gap-2 col-md-6 mx-auto">
+        <a href="/projects" class="btn btn-primary btn-lg">Explore Projects</a>
+        <% if (!currentUser) { %>
+            <a href="/users/register" class="btn btn-outline-secondary btn-lg">Join PeerSync Now</a>
+        <% } else { %>
+            <a href="/projects/new" class="btn btn-outline-secondary btn-lg">Start a New Project</a>
+        <% } %>
+    </div>
+
+    <hr class="my-5">
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <i class="material-icons text-primary mb-3" style="font-size: 3rem;">group_add</i>
+                    <h5 class="card-title">Skill-Based Matching</h5>
+                    <p class="card-text">Find the perfect collaborators with complementary skills for your projects.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <i class="material-icons text-success mb-3" style="font-size: 3rem;">dashboard</i>
+                    <h5 class="card-title">Real-time Task Boards</h5>
+                    <p class="card-text">Track progress efficiently with intuitive Kanban-style task management.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <i class="material-icons text-warning mb-3" style="font-size: 3rem;">star_half</i>
+                    <h5 class="card-title">Smart Peer Review</h5>
+                    <p class="card-text">Enhance teamwork and learning with integrated peer feedback system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

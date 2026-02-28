@@ -1,0 +1,61 @@
+<% layout('layouts/boilerplate')%>
+<div class="row my-4">
+    <div class="col-lg-10 offset-lg-1">
+        <h1 class="mb-4 text-center">Analytics Dashboard</h1>
+        <p class="lead text-center mb-5">Gain insights into project and user activity.</p>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+            <div class="col">
+                <div class="card h-100 shadow-sm border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary"><i class="fas fa-project-diagram me-2"></i>Total Projects</h5>
+                        <p class="card-text display-4"><%= totalProjects %></p>
+                        <p class="card-text text-muted">Across the platform</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm border-success">
+                    <div class="card-body">
+                        <h5 class="card-title text-success"><i class="fas fa-users me-2"></i>Total Users</h5>
+                        <p class="card-text display-4"><%= totalUsers %></p>
+                        <p class="card-text text-muted">Registered members</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm border-info">
+                    <div class="card-body">
+                        <h5 class="card-title text-info"><i class="fas fa-check-circle me-2"></i>Tasks Completed</h5>
+                        <p class="card-text display-4"><%= completedTasksCount %></p>
+                        <p class="card-text text-muted">All 'Done' tasks</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">Projects by Status</h3>
+            </div>
+            <div class="card-body">
+                <% if (projectsByStatus && projectsByStatus.length) { %>
+                    <ul class="list-group list-group-flush">
+                        <% projectsByStatus.forEach(status => { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <%= status._id %>
+                                <span class="badge bg-primary rounded-pill"><%= status.count %></span>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p class="text-muted">No project status data available.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- TODO: Add more charts/graphs using a library like Chart.js -->
+        <!-- Example: <canvas id="projectsByStatusChart"></canvas> -->
+
+    </div>
+</div>

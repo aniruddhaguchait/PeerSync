@@ -1,0 +1,48 @@
+<% layout('layouts/boilerplate')%>
+<div class="row my-4">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">Edit Profile</h1>
+                <form action="/users/<%= user._id %>/edit?_method=PUT" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label" for="username">Username</label>
+                        <input class="form-control" type="text" id="username" name="user[username]" value="<%= user.username %>" required>
+                        <div class="valid-feedback">Looks good!</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" type="email" id="email" name="user[email]" value="<%= user.email %>" required>
+                        <div class="valid-feedback">Looks good!</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="skills">Skills (comma separated)</label>
+                        <input class="form-control" type="text" id="skills" name="user[skills]" value="<%= user.skills.join(', ') %>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="interests">Interests (comma separated)</label>
+                        <input class="form-control" type="text" id="interests" name="user[interests]" value="<%= user.interests.join(', ') %>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="domainTags">Domain Tags (comma separated)</label>
+                        <input class="form-control" type="text" id="domainTags" name="user[domainTags]" value="<%= user.domainTags.join(', ') %>">
+                    </div>
+                    <div class="mb-3">
+                        <label for="profileImage" class="form-label">Update Profile Image (Optional)</label>
+                        <input class="form-control" type="file" id="profileImage" name="user[profileImage]">
+                        <% if (user.profileImage && user.profileImage.url) { %>
+                            <div class="mt-2">
+                                Current Image: <img src="<%= user.profileImage.url %>" alt="Current Profile Image" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success"><i class="fas fa-save me-2"></i>Update Profile</button>
+                        <a href="/users/<%= user._id %>" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

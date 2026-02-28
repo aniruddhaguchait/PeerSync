@@ -1,0 +1,322 @@
+<% layout('layouts/boilerplate')%>
+<div class="row my-4">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card shadow-sm mb-4">
+            <div id="projectCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <% if (project.images && project.images.length) { %>
+                        <% project.images.forEach((image, index) => { %>
+                            <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                <img src="<%= image.url %>" class="d-block w-100 card-img-top" alt="<%= project.title %> Image" style="height: 350px; object-fit: cover;">
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="carousel-item active">
+                            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="d-block w-100 card-img-top" alt="Project Placeholder" style="height: 350px; object-fit: cover;">
+                        </div>
+                    <% } %>
+                </div>
+                <% if (project.images && project.images.length > 1) { %>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                <% } %>
+            </div>
+
+            <div class="card-body">
+                <h1 class="card-title"><%= project.title %></h1>
+                <p class="card-text"><%= project.description %></p>
+                <hr>
+                <p class="card-text">
+                    <strong>Owner:</strong> <a href="/users/<%= project.owner._id %>"><%= project.owner.username %></a>
+                </p>
+                <p class="card-text">
+                    <strong>Status:</strong> <span class="badge bg-<%= project.status === 'Completed' ? 'success' : (project.status === 'In Progress' ? 'primary' : 'secondary') %>"><%= project.status %></span>
+                </p>
+                <p class="card-text">
+                    <strong>Tags:</strong>
+                    <% project.tags.forEach(tag => { %>
+                        <span class="badge bg-info text-dark me-1"><%= tag %></span>
+                    <% }); %>
+                </p>
+                <p class="card-text">
+                    <strong>Members:</strong>
+                    <% if (project.members && project.members.length) { %>
+                        <% project.members.forEach(member => { %>
+                            <a href="/users/<%= member._id %>" class="badge bg-secondary me-1">
+                                <% if (member.profileImage && member.profileImage.url) { %>
+                                    <img src="<%= member.profileImage.url %>" alt="Profile" class="profile-small-img">
+                                <% } %>
+                                <%= member.username %>
+                            </a>
+                        <% }); %>
+                    <% } else { %>
+                        <em>No members yet.</em>
+                    <% } %>
+                </p>
+
+                <!-- Join Project Button -->
+                <% if (currentUser && !project.owner.equals(currentUser._id) && !isMember) { %>
+                    <form action="/projects/<%= project._id %>/join" method="POST" class="mt-3">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-user-plus me-2"></i>Join Project
+                        </button>
+                    </form>
+                <% } %>
+
+
+                <% if (currentUser && project.owner.equals(currentUser._id)) { %>
+                    <div class="d-grid gap-2 d-md-block mt-3">
+                        <a class="btn btn-warning" href="/projects/<%= project._id %>/edit">Edit Project</a>
+                        <form class="d-inline" action="/projects/<%= project._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-danger">Delete Project</button>
+                        </form>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                            Add Member
+                        </button>
+                    </div>
+                <% } %>
+                 <% if (currentUser && isMember) { %>
+                    <a href="/projects/<%= project._id %>/chat" class="btn btn-info mt-3"><i class="fas fa-comments me-2"></i>Join Chat</a>
+                 <% } %>
+                 <!-- <a href="/projects/<%= project._id %>/chat" class="btn btn-info mt-3">
+                <i class="fas fa-comments me-2"></i>Join Chat
+                </a> -->
+
+            </div>
+            <div class="card-footer text-muted">
+                Last updated <%= project.updatedAt.toDateString() %>
+            </div>
+        </div>
+
+        <!-- Task Board Section -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">Task Board</h3>
+                <% if (currentUser && isMember) { %>
+                    <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                        <i class="fas fa-plus me-1"></i>Add Task
+                    </button>
+                <% } %>
+            </div>
+            <div class="card-body">
+                <div class="row row-cols-1 row-cols-md-3 g-3">
+                    <div class="col">
+                        <div class="kanban-column">
+                            <h5>To Do</h5>
+                            <% project.tasks.filter(task => task.status === 'To Do').forEach(task => { %>
+                                <div class="kanban-task">
+                                    <h6><%= task.title %></h6>
+                                    <p class="small-text"><%= task.description %></p>
+                                    <% if (task.assignee) { %>
+                                        <p class="small-text">Assigned to: <a href="/users/<%= task.assignee._id %>"><%= task.assignee.username %></a></p>
+                                    <% } %>
+                                    <% if (task.dueDate) { %>
+                                        <p class="small-text">Due: <%= task.dueDate.toDateString() %></p>
+                                    <% } %>
+                                    <% if (currentUser && isMember && (task.assignee && task.assignee.equals(currentUser._id) || project.owner.equals(currentUser._id))) { %>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editTaskModal-<%= task._id %>">Edit</button>
+                                            <form action="/projects/<%= project._id %>/tasks/<%= task._id %>?_method=DELETE" method="POST" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <%- include('../tasks/editTaskModal', { project, task, members: project.members }) %>
+                            <% }); %>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="kanban-column">
+                            <h5>Doing</h5>
+                            <% project.tasks.filter(task => task.status === 'Doing').forEach(task => { %>
+                                <div class="kanban-task">
+                                    <h6><%= task.title %></h6>
+                                    <p class="small-text"><%= task.description %></p>
+                                    <% if (task.assignee) { %>
+                                        <p class="small-text">Assigned to: <a href="/users/<%= task.assignee._id %>"><%= task.assignee.username %></a></p>
+                                    <% } %>
+                                    <% if (task.dueDate) { %>
+                                        <p class="small-text">Due: <%= task.dueDate.toDateString() %></p>
+                                    <% } %>
+                                    <% if (currentUser && isMember && (task.assignee && task.assignee.equals(currentUser._id) || project.owner.equals(currentUser._id))) { %>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editTaskModal-<%= task._id %>">Edit</button>
+                                            <form action="/projects/<%= project._id %>/tasks/<%= task._id %>?_method=DELETE" method="POST" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <%- include('../tasks/editTaskModal', { project, task, members: project.members }) %>
+                            <% }); %>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="kanban-column">
+                            <h5>Done</h5>
+                            <% project.tasks.filter(task => task.status === 'Done').forEach(task => { %>
+                                <div class="kanban-task">
+                                    <h6><%= task.title %></h6>
+                                    <p class="small-text"><%= task.description %></p>
+                                    <% if (task.assignee) { %>
+                                        <p class="small-text">Assigned to: <a href="/users/<%= task.assignee._id %>"><%= task.assignee.username %></a></p>
+                                    <% } %>
+                                    <% if (task.dueDate) { %>
+                                        <p class="small-text">Completed: <%= task.updatedAt.toDateString() %></p>
+                                    <% } %>
+                                    <% if (currentUser && isMember && (task.assignee && task.assignee.equals(currentUser._id) || project.owner.equals(currentUser._id))) { %>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editTaskModal-<%= task._id %>">Edit</button>
+                                            <form action="/projects/<%= project._id %>/tasks/<%= task._id %>?_method=DELETE" method="POST" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <%- include('../tasks/editTaskModal', { project, task, members: project.members }) %>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Peer Review Section -->
+        <% if (currentUser && isMember && otherMembers.length > 0) { %>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Peer Review</h3>
+                </div>
+                <div class="card-body">
+                    <p>Provide feedback to your teammates:</p>
+                    <ul class="list-group">
+                        <% otherMembers.forEach(member => { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="/users/<%= member._id %>">
+                                    <% if (member.profileImage && member.profileImage.url) { %>
+                                        <img src="<%= member.profileImage.url %>" alt="Profile" class="profile-small-img">
+                                    <% } %>
+                                    <%= member.username %>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#peerReviewModal-<%= member._id %>">
+                                    Review
+                                </button>
+                            </li>
+                            <!-- Peer Review Modal -->
+                            <div class="modal fade" id="peerReviewModal-<%= member._id %>" tabindex="-1" aria-labelledby="peerReviewModalLabel-<%= member._id %>" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="peerReviewModalLabel-<%= member._id %>">Review <%= member.username %></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="/projects/<%= project._id %>/review/<%= member._id %>" method="POST" class="needs-validation" novalidate>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="rating-<%= member._id %>" class="form-label">Rating (1-5)</label>
+                                                    <input type="number" class="form-control" id="rating-<%= member._id %>" name="rating" min="1" max="5" required>
+                                                    <div class="invalid-feedback">Please provide a rating between 1 and 5.</div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="feedback-<%= member._id %>" class="form-label">Feedback</label>
+                                                    <textarea class="form-control" id="feedback-<%= member._id %>" name="feedback" rows="3" required></textarea>
+                                                    <div class="invalid-feedback">Feedback cannot be empty.</div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </ul>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Add Member Modal -->
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMemberModalLabel">Add New Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/projects/<%= project._id %>/members/add" method="POST" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="newMemberUsername" class="form-label">Username of New Member</label>
+                        <input type="text" class="form-control" id="newMemberUsername" name="newMemberUsername" required>
+                        <div class="invalid-feedback">Please provide a username.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/projects/<%= project._id %>/tasks" method="POST" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="taskTitle" class="form-label">Task Title</label>
+                        <input type="text" class="form-control" id="taskTitle" name="task[title]" required>
+                        <div class="invalid-feedback">Please provide a task title.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription" class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" id="taskDescription" name="task[description]" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskStatus" class="form-label">Status</label>
+                        <select class="form-select" id="taskStatus" name="task[status]" required>
+                            <option value="To Do" selected>To Do</option>
+                            <option value="Doing">Doing</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDueDate" class="form-label">Due Date (Optional)</label>
+                        <input type="date" class="form-control" id="taskDueDate" name="task[dueDate]">
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskAssignee" class="form-label">Assignee (Optional)</label>
+                        <select class="form-select" id="taskAssignee" name="assigneeUsername">
+                            <option value="">Unassigned</option>
+                            <% project.members.forEach(member => { %>
+                                <option value="<%= member.username %>"><%= member.username %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

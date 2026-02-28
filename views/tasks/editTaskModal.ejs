@@ -1,0 +1,51 @@
+<!-- Edit Task Modal for a specific task -->
+<div class="modal fade" id="editTaskModal-<%= task._id %>" tabindex="-1" aria-labelledby="editTaskModalLabel-<%= task._id %>" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTaskModalLabel-<%= task._id %>">Edit Task: <%= task.title %></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/projects/<%= project._id %>/tasks/<%= task._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editTaskTitle-<%= task._id %>" class="form-label">Task Title</label>
+                        <input type="text" class="form-control" id="editTaskTitle-<%= task._id %>" name="task[title]" value="<%= task.title %>" required>
+                        <div class="invalid-feedback">Please provide a task title.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskDescription-<%= task._id %>" class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" id="editTaskDescription-<%= task._id %>" name="task[description]" rows="3"><%= task.description %></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskStatus-<%= task._id %>" class="form-label">Status</label>
+                        <select class="form-select" id="editTaskStatus-<%= task._id %>" name="task[status]" required>
+                            <% ['To Do', 'Doing', 'Done'].forEach(s => { %>
+                                <option value="<%= s %>" <%= task.status === s ? 'selected' : '' %>><%= s %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskDueDate-<%= task._id %>" class="form-label">Due Date (Optional)</label>
+                        <input type="date" class="form-control" id="editTaskDueDate-<%= task._id %>" name="task[dueDate]" value="<%= task.dueDate ? task.dueDate.toISOString().substring(0,10) : '' %>">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskAssignee-<%= task._id %>" class="form-label">Assignee (Optional)</label>
+                        <select class="form-select" id="editTaskAssignee-<%= task._id %>" name="assigneeUsername">
+                            <option value="">Unassigned</option>
+                            <% members.forEach(member => { %>
+                                <option value="<%= member.username %>" <%= task.assignee && task.assignee.equals(member._id) ? 'selected' : '' %>>
+                                    <%= member.username %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

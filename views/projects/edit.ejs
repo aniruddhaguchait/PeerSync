@@ -1,0 +1,65 @@
+<% layout('layouts/boilerplate')%>
+<div class="row my-4">
+    <h1 class="text-center mb-4">Edit Project</h1>
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form action="/projects/<%= project._id %>?_method=PUT" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label" for="title">Title</label>
+                        <input class="form-control" type="text" id="title" name="project[title]" value="<%= project.title %>" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="description">Description</label>
+                        <textarea class="form-control" id="description" name="project[description]" required><%= project.description %></textarea>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="tags">Tags (comma separated)</label>
+                        <input class="form-control" type="text" id="tags" name="project[tags]" value="<%= project.tags.join(', ') %>" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="status">Status</label>
+                        <select class="form-select" id="status" name="project[status]">
+                            <% ['Open', 'In Progress', 'Completed', 'Archived'].forEach(s => { %>
+                                <option value="<%= s %>" <%= project.status === s ? 'selected' : '' %>><%= s %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Add More Images</label>
+                        <input class="form-control" type="file" id="images" name="project[images]" multiple>
+                    </div>
+                    <% if (project.images && project.images.length) { %>
+                        <div class="mb-3">
+                            <label class="form-label">Current Images:</label>
+                            <div class="row">
+                                <% project.images.forEach(img => { %>
+                                    <div class="col-6 col-md-4 mb-2">
+                                        <img src="<%= img.url %>" class="img-thumbnail" alt="">
+                                        <div class="form-check mt-1">
+                                            <input class="form-check-input" type="checkbox" id="image-<%= img.filename %>" name="deleteImages[]" value="<%= img.filename %>">
+                                            <label class="form-check-label" for="image-<%= img.filename %>">Delete</label>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% } %>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success">Update Project</button>
+                        <a href="/projects/<%= project._id %>" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

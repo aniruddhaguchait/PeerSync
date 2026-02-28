@@ -1,0 +1,33 @@
+const Joi = require('joi');
+
+module.exports.projectSchema = Joi.object({
+    project: Joi.object({
+        title: Joi.string().required(),
+        description: Joi.string().required(),
+        tags: Joi.string().required(), // Comma-separated tags
+        // collaborators: Joi.array().items(Joi.string()), // Will handle dynamically
+        // owner: Joi.string().required(), // Will be set by server
+        status: Joi.string().valid('Open', 'In Progress', 'Completed', 'Archived').default('Open')
+    }).required()
+});
+
+module.exports.taskSchema = Joi.object({
+    task: Joi.object({
+        title: Joi.string().required(),
+        description: Joi.string().allow(''), // Description can be optional
+        status: Joi.string().valid('To Do', 'Doing', 'Done').required().default('To Do'),
+        dueDate: Joi.date().allow(null, ''), // Optional due date
+        assignee: Joi.string().allow(null, '') // Assignee ID, can be optional
+    }).required()
+});
+
+module.exports.userProfileSchema = Joi.object({
+    user: Joi.object({
+        username: Joi.string().min(3).required(),
+        email: Joi.string().email().required(),
+        skills: Joi.string().allow(''), // Comma-separated skills
+        interests: Joi.string().allow(''), // Comma-separated interests
+        domainTags: Joi.string().allow(''), // Comma-separated domain tags
+        // profileImage: Joi.string().allow('') // Handled by Cloudinary upload
+    }).required()
+}).unknown(true); // Allow other fields like password for now if they exist, but generally filter
