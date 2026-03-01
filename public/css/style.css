@@ -201,6 +201,44 @@ a:hover { text-decoration: none; }
   box-shadow: 0 14px 20px rgba(255,56,92,0.22);
 }
 
+/* ---------- Responsive Enhancements ---------- */
+/* typography scaling for small devices */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+}
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+/* buttons full width on phones */
+@media (max-width: 576px) {
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* responsive image/video helper */
+.responsive-img, img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* utility for small-screen centering */
+.text-center-sm {
+  text-align: center;
+}
+
+/* extra container padding on narrow screens */
+@media (max-width: 576px) {
+  .container, .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 /* =========================================================
    Forms (clean, modern)
    ========================================================= */

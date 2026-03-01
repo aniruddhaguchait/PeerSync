@@ -10,16 +10,16 @@ if (process.env.NODE_ENV !== "production") {
 const mongoose = require('mongoose');
 const User = require('../models/user');
 
-const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/EduSync';
+const dbUrl = process.env.ATLAS_DB_URL || 'mongodb://127.0.0.1:27017/EduSync';
 mongoose.connect(dbUrl)
     .then(() => console.log('MongoDB Connected for Admin Init!'))
     .catch(err => console.error('MongoDB Connection Error:', err));
 
 const createAdmin = async () => {
     try {
-        const adminEmail = 'admin@edusync.com';
+        const adminEmail = 'admin@peersync.com';
         const adminUsername = 'admin';
-        const adminPassword = 'adminpassword'; // CHANGE THIS!
+        const adminPassword = process.env.ADMIN; // CHANGE THIS!
 
         let adminUser = await User.findOne({ email: adminEmail });
 

@@ -1,50 +1,152 @@
-<% layout('layouts/boilerplate')%>
-<div class="row my-4">
-    <h1 class="text-center mb-4">Create a New Project</h1>
-    <div class="col-md-6 offset-md-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <form action="/projects" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label" for="title">Title</label>
-                        <input class="form-control" type="text" id="title" name="project[title]" required>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="description">Description</label>
-                        <textarea class="form-control" id="description" name="project[description]" required></textarea>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="tags">Tags (comma separated)</label>
-                        <input class="form-control" type="text" id="tags" name="project[tags]" required>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="status">Status</label>
-                        <select class="form-select" id="status" name="project[status]">
-                            <option value="Open" selected>Open</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Archived">Archived</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="images" class="form-label">Add Images</label>
-                        <input class="form-control" type="file" id="images" name="project[images]" multiple>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-success">Add Project</button>
-                        <a href="/projects" class="btn btn-secondary">Cancel</a>
-                    </div>
-                </form>
-            </div>
+<% layout('layouts/boilerplate') %>
+
+<div class="container my-5" style="max-width: 900px;">
+  <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 18px;">
+    
+    <!-- Header -->
+    <div class="p-4"
+      style="background: linear-gradient(135deg, rgba(13,202,240,0.22), rgba(255,56,92,0.18));
+             border-bottom: 1px solid rgba(0,0,0,0.06);">
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center justify-content-center"
+          style="width: 46px; height: 46px; border-radius: 14px; background: rgba(13,202,240,0.25);">
+          <i class="fa-solid fa-diagram-project" style="font-size: 18px;"></i>
         </div>
+        <div>
+          <h2 class="mb-1" style="font-weight: 700; letter-spacing: .2px;">Create a New Project</h2>
+          <div class="text-muted" style="font-size: .95rem;">
+            Add details so others can discover and join your project.
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Body -->
+    <div class="card-body p-4 p-md-5" style="background: rgba(255,255,255,0.85);">
+      <form action="/projects" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
+        
+        <!-- Row 1 -->
+        <div class="row g-4">
+          <div class="col-md-8">
+            <label class="form-label" for="title" style="font-weight: 600;">Project Title</label>
+            <div class="input-group">
+              <span class="input-group-text" style="border-radius: 12px 0 0 12px;">
+                <i class="fa-solid fa-heading"></i>
+              </span>
+              <input
+                class="form-control"
+                type="text"
+                id="title"
+                name="project[title]"
+                placeholder="e.g. PeerSync Collaboration Platform"
+                required
+                style="border-radius: 0 12px 12px 0; padding: .85rem 1rem;"
+                onfocus="this.style.boxShadow='0 0 0 .2rem rgba(13,202,240,.25)'"
+                onblur="this.style.boxShadow='none'"
+              >
+            </div>
+            <div class="invalid-feedback">Please enter a project title.</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="status" style="font-weight: 600;">Status</label>
+            <div class="input-group">
+              <span class="input-group-text" style="border-radius: 12px 0 0 12px;">
+                <i class="fa-solid fa-circle-info"></i>
+              </span>
+              <select
+                class="form-select"
+                id="status"
+                name="project[status]"
+                style="border-radius: 0 12px 12px 0; padding: .85rem 1rem;"
+                onfocus="this.style.boxShadow='0 0 0 .2rem rgba(13,202,240,.25)'"
+                onblur="this.style.boxShadow='none'"
+              >
+                <option value="Open" selected>Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Archived">Archived</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mt-4">
+          <label class="form-label" for="description" style="font-weight: 600;">Description</label>
+          <textarea
+            class="form-control"
+            id="description"
+            name="project[description]"
+            rows="4"
+            placeholder="What is this project about? What problem are you solving?"
+            required
+            style="border-radius: 12px; padding: .9rem 1rem;"
+            onfocus="this.style.boxShadow='0 0 0 .2rem rgba(13,202,240,.25)'"
+            onblur="this.style.boxShadow='none'"
+          ></textarea>
+          <div class="invalid-feedback">Please add a short description.</div>
+        </div>
+
+        <!-- Tags + Images -->
+        <div class="row g-4 mt-1">
+          <div class="col-md-7">
+            <label class="form-label" for="tags" style="font-weight: 600;">Tags</label>
+            <div class="input-group">
+              <span class="input-group-text" style="border-radius: 12px 0 0 12px;">
+                <i class="fa-solid fa-tags"></i>
+              </span>
+              <input
+                class="form-control"
+                type="text"
+                id="tags"
+                name="project[tags]"
+                placeholder="e.g. Node.js, MongoDB, EJS, Socket.io"
+                required
+                style="border-radius: 0 12px 12px 0; padding: .85rem 1rem;"
+                onfocus="this.style.boxShadow='0 0 0 .2rem rgba(13,202,240,.25)'"
+                onblur="this.style.boxShadow='none'"
+              >
+            </div>
+            <div class="form-text">Comma separated tags help collaborators find your project.</div>
+            <div class="invalid-feedback">Please add at least one tag.</div>
+          </div>
+
+          <div class="col-md-5">
+            <label class="form-label" for="images" style="font-weight: 600;">Project Images</label>
+            <input
+              class="form-control"
+              type="file"
+              id="images"
+              name="project[images]"
+              multiple
+              style="border-radius: 12px; padding: .65rem .9rem;"
+              onfocus="this.style.boxShadow='0 0 0 .2rem rgba(13,202,240,.25)'"
+              onblur="this.style.boxShadow='none'"
+            >
+            <div class="form-text">Optional — you can upload multiple images.</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-column flex-sm-row gap-2 mt-5">
+          <button
+            class="btn btn-success px-4 py-2"
+            style="border-radius: 12px; font-weight: 600; box-shadow: 0 10px 18px rgba(25,135,84,.18);"
+          >
+            <i class="fa-solid fa-circle-plus me-2"></i>Create Project
+          </button>
+
+          <a
+            href="/projects"
+            class="btn btn-outline-secondary px-4 py-2"
+            style="border-radius: 12px; font-weight: 600;"
+          >
+            <i class="fa-solid fa-arrow-left me-2"></i>Back
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
 </div>
