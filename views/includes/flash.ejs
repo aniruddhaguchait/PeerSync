@@ -1,13 +1,18 @@
-<% if (success && success.length) { %>
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <%= success %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<% 
+    const s = (typeof success !== "undefined") ? success : [];
+    const e = (typeof error !== "undefined") ? error : [];
+%>
+
+<% if (s && s.length) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= Array.isArray(s) ? s.join("<br>") : s %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 <% } %>
 
-<% if (error && error.length) { %>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <%= error %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<% if (e && e.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= Array.isArray(e) ? e.join("<br>") : e %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 <% } %>

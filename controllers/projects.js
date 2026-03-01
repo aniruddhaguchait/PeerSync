@@ -70,6 +70,11 @@ module.exports.showProject = async (req, res) => {
     res.render('projects/show', { project, isMember, otherMembers });
 };
 
+module.exports.myProjects = async (req, res) => {
+    const projects = await Project.find({ members: req.user._id }).populate("owner");
+    res.render("projects/myProjects", { projects });
+};
+
 module.exports.renderEditForm = async (req, res) => {
     const project = await Project.findById(req.params.projectId);
     if (!project) {

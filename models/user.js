@@ -1,37 +1,43 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const passportLocalMongoose = require('passport-local-mongoose');
+const passportLocalMongoose = require("passport-local-mongoose");
+
+const DEFAULT_AVATAR =
+  "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
 const UserSchema = new Schema({
-    email: {
-        type: String,
-        required: true,
-        unique: true
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  profileImage: {
+    url: {
+      type: String,
+      default: DEFAULT_AVATAR,
     },
-    profileImage: {
-        url: String,
-        filename: String
+    filename: {
+      type: String,
+      default: "default-profile",
     },
-    skills: [{
-        type: String // e.g., ['React', 'Node.js']
-    }],
-    interests: [{
-        type: String // e.g., ['Web Development', 'AI']
-    }],
-    domainTags: [{
-        type: String // e.g., ['Frontend', 'Backend', 'Data Science']
-    }],
-    projects: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Project'
-    }],
-    isAdmin: { // Optional: for admin users
-        type: Boolean,
-        default: false
-    }
+  },
+
+  skills: [{ type: String }],
+  interests: [{ type: String }],
+  domainTags: [{ type: String }],
+
+  projects: [{
+    type: Schema.Types.ObjectId,
+    ref: "Project",
+  }],
+
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-// Passport-local-mongoose adds username, hash, and salt fields
 UserSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);

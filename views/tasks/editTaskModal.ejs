@@ -31,7 +31,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="editTaskAssignee-<%= task._id %>" class="form-label">Assignee (Optional)</label>
-                        <select class="form-select" id="editTaskAssignee-<%= task._id %>" name="assigneeUsername">
+                        <select class="form-select" id="editTaskAssignee-<%= task._id %>" name="task[assigneeUsername]">
                             <option value="">Unassigned</option>
                             <% members.forEach(member => { %>
                                 <option value="<%= member.username %>" <%= task.assignee && task.assignee.equals(member._id) ? 'selected' : '' %>>

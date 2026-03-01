@@ -31,14 +31,16 @@ module.exports.validateProject = (req, res, next) => {
 };
 
 // Joi validation middleware for Tasks
+
 module.exports.validateTask = (req, res, next) => {
-    const { error } = taskSchema.validate(req.body);
+    // allowUnknown true makes sure fields like assigneeUsername (and any other
+    // non-schema properties such as CSRF tokens) don't trigger a validation error.
+    const { error } = taskSchema.validate(req.body, { allowUnknown: true });
     if (error) {
-        const msg = error.details.map(el => el.message).join(',');
+        const msg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(msg, 400);
-    } else {
-        next();
     }
+    next();
 };
 
 // Joi validation middleware for User Profile Updates

@@ -14,11 +14,13 @@ module.exports.projectSchema = Joi.object({
 module.exports.taskSchema = Joi.object({
     task: Joi.object({
         title: Joi.string().required(),
-        description: Joi.string().allow(''), // Description can be optional
-        status: Joi.string().valid('To Do', 'Doing', 'Done').required().default('To Do'),
-        dueDate: Joi.date().allow(null, ''), // Optional due date
-        assignee: Joi.string().allow(null, '') // Assignee ID, can be optional
-    }).required()
+        description: Joi.string().allow("", null),
+        status: Joi.string().valid("To Do", "Doing", "Done").required(),
+        dueDate: Joi.date().allow("", null),
+
+        // ✅ allow this (THIS is the fix)
+        assigneeUsername: Joi.string().allow("", null),
+    }).unknown(true).required(), // allow extra keys like assigneeUsername or CSRF tokens
 });
 
 module.exports.userProfileSchema = Joi.object({

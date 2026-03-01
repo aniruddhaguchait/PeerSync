@@ -17,6 +17,7 @@ router.route('/')
     .post(isLoggedIn, upload.array('project[images]'), validateProject, catchAsync(projects.createProject)); // Allow multiple images
 
 router.get('/new', isLoggedIn, projects.renderNewForm);
+router.get("/my-projects", isLoggedIn, catchAsync(projects.myProjects));
 
 router.route('/:projectId')
     .get(isLoggedIn, catchAsync(projects.showProject))
